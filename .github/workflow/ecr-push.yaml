@@ -1,0 +1,28 @@
+name:PUSH ETOE REPO TO ECR
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v3
+
+      - name: configure AWS CREDENTIALS
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{secrets.AWS_SECRET_KEY }}
+          aws-region: ${{secrets.AWS_REGION}}
+      - name: LOGIN TO ECR
+        id : login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name:  PUSH ETOE
+        env:
+          ECR_REGISTRY: ${{secrets.ECR_REPO_URI }}
+        run : |
+          IMAGE_TAG=latest
+          docker build -t $ECR_REGISTRY: $IMAGE_TAG .
+          dockerpush $ECR_REGISTRY: $IMAGE_TAG .
