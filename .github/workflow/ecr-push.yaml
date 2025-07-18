@@ -22,7 +22,11 @@ jobs:
       - name:  PUSH ETOE
         env:
           ECR_REGISTRY: ${{secrets.ECR_REPO_URI }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
         run : |
           IMAGE_TAG=latest
           docker build -t $ECR_REGISTRY: $IMAGE_TAG .
-          dockerpush $ECR_REGISTRY: $IMAGE_TAG .
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$(date +%s)
+          
+          dockerpush $ECR_REGISTRY: $IMAGE_TAG 
+          
